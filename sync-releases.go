@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"slices"
 	"strings"
@@ -26,11 +25,11 @@ func main() {
 	var availableReleases []Release
 
 	for _, file := range files {
-		fileName := strings.Replace(file.Name(), ".zip", "", -1)
-		fileName = strings.Replace(fileName, ".rar", "", -1)
+		fileName := file.Name()
 
-		fmt.Println(fileName)
-
+		splitDotLen := len(strings.Split(fileName, "."))
+		extention := strings.Split(fileName, ".")[splitDotLen-1]
+		fileName = strings.Replace(fileName, "."+extention, "", 1)
 		parts := strings.Split(fileName, "-")
 
 		version := parts[1]
@@ -44,11 +43,11 @@ func main() {
 			availableReleases = append(availableReleases, Release{
 				Tag: version,
 				Source: Source{
-					arch: fileName,
+					arch: fileName + "." + extention,
 				},
 			})
 		} else {
-			availableReleases[alreadyIn].Source[arch] = fileName
+			availableReleases[alreadyIn].Source[arch] = fileName + "." + extention
 		}
 	}
 
